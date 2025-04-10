@@ -14,6 +14,6 @@ Stretch Goals: An additional feature I would like to add is the ability to do a 
 
 ## Project Wireframe
 
-![landing wireframe](408mockup.png)
-![leaderboard wireframe](leaderboard.png)
-![about wireframe](about.png)
+<img width="684" alt="Landing Mockup" src="https://github.com/JackLawford/cs408-final-project/blob/main/408mockup.PNG" />
+<img width="684" alt="About Mockup" src="https://github.com/JackLawford/cs408-final-project/blob/main/About.PNG" />
+<img width="684" alt="Leaderboard Mockup" src="https://github.com/JackLawford/cs408-final-project/blob/main/leaderboard.PNG" />
