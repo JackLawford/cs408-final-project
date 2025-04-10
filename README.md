@@ -4,7 +4,7 @@
 
 Overview: This project will be a simple drag racing web game focused on reaction time.
 
-Functionality: Being focused on reaction time in the context of drag racing, the user should open with a prompt to start the game or view the leaderboard. Upon clicking start game, the user will be displayed a simple drag strip graphic with a vehicle on it and the classic drag racing "tree" lights signaling them when to go. Throttle will be controlled by holding down left mouse button on the game's canvas. If the user "jumps" the light, or clicks before the light turns green, a false start pop-up will be displayed and the user will be sent back to the initial screen and given a score of DNF (did not finish). If the user presses down their left mouse button after the green light is displayed, the car will take off down the track. Once the car reaches the end of the track, a time will be displayed. This will likely be a constant value with the user's reaction time subtracted from it. The user will then be prompted to attach a name to their score and it will be inserted into the database with their name and time. 
+Functionality: Being focused on reaction time in the context of drag racing, the user should open with a prompt to start the game or view the leaderboard. Upon clicking start game, the user will be displayed a simple drag strip graphic with a vehicle on it and the classic drag racing "tree" lights signaling them when to go. Throttle will be controlled by holding down left mouse button on the game's canvas. If the user "jumps" the light, or clicks before the light turns green, a false start pop-up will be displayed and the user will be sent back to the initial screen and given a score of DNF (did not finish). If the user presses down their left mouse button after the green light is displayed, the car will take off down the track. Once the car reaches the end of the track, a time will be displayed. This will likely be a constant value with the user's reaction time subtracted from it. The user will then be prompted to attach a name to their score and it will be inserted into the database with their name and time. It also seems like a useful feature that would keep the leaderboard cleaner would be searching for duplicate usernames. This way when someone gets a new person best, I can ensure that only their best time is displayed. This will also minimize the DB usage and cost while still letting players track their best scores and have them displayed for other users to see!
 
 Target Audience: This app will be heavily inspired by older flash game websites such as CoolMathGames, MiniClip, Kongregate, etc. That being said, simple games are typically consumed and enjoyed by children. This game will be designed with that in mind, as well as users that may be car enthusiasts or simply people looking for a lighthearted pastime.
 
@@ -14,4 +14,6 @@ Stretch Goals: An additional feature I would like to add is the ability to do a 
 
 ## Project Wireframe
 
-![wireframe](408mockup.png)
+![landing wireframe](408mockup.png)
+![leaderboard wireframe](leaderboard.png)
+![about wireframe](about.png)
