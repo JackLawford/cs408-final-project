@@ -96,6 +96,15 @@ th{
   border: 2px solid #fff;
 }
 
+#backgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5)
+}
+
 /* Layered overlays */
 .overlay {
   position: absolute;
@@ -122,6 +131,54 @@ th{
   font-family: monospace;
   font-size: 200%;
   text-shadow: 2px 2px #000;
+}
+
+#menu {
+  position: absolute; /* <-- required */
+  pointer-events: auto;
+  top: 32.5%;
+  left: 25%;
+  height: 35%;
+  min-height: 160px;
+  width: 50%;
+  background-color: white;
+  border-radius: 10px;
+  text-align: center;
+}
+
+#menu h2 {
+  font-size: 2em;
+  margin: 0;
+  margin: 7% 0 10px 0;
+  color: #111;
+}
+
+#menu button, #menu a {
+  background-color: #111;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#menu button:hover, #menu a:hover {
+  background-color: #000;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+
+#username-input {
+  margin: 10px 0 10px 5px;
+  padding: 8px;
+  font-size: 1em;
+  border-radius: 5px;
+}
+
+#username-input:focus {
+  outline: none !important;
+  border: 2px solid #111;
 }
 
 /* About Styles */

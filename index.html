@@ -20,10 +20,14 @@
   </div> 
 
   <div class="game-container" id="gameCanvas">
-    <img id="car" class="overlay" src="img/vetterear.png">
-    <img id="tree" class="overlay" src="img/tree.png">
-    <div id="timer" class="overlay">--.--s</div>
-
+    <img id="car" class="overlay gameComponent" src="img/vetterear.png">
+    <img id="tree" class="overlay gameComponent" src="img/tree-01.png">
+    <div id="timer" class="overlay gameComponent">--.--s</div>
+    <div id="backgroundLayer"></div>
+    <div id="menu" class="overlay">
+      <button id="startButton">Play</button>
+      <a id="leaderboardButton" href="/leaderboard.html">Leaderboard</a>
+    </div>
   </div>
   <script type="module" src="js/main.js"></script>
 </body>
