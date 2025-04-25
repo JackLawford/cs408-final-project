@@ -22,6 +22,7 @@ function startGame() {
 
 // Start the tree sequence
 function startTreeSequence() {
+  raceTime = 0;
   jumped = false;
   backgroundLayer.style.display = "none";
   menu.style.display = "none";
@@ -68,7 +69,7 @@ function launchCarAndDisplayTime(reactionTime) {
   car.style.transition = "none";
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
   
-  void car.offsetWidth; // Force reflow
+  void car.offsetWidth;
 
   raceTime = 10 + reactionTime;
   car.style.transition = `transform ${raceTime}s cubic-bezier(0.05, 0.7, 0.4, 1)`;
@@ -104,13 +105,59 @@ function raceDone(raceTime) {
     "none"
   );
 
-  menu.style.paddingBottom = "50px"; // Reset padding to avoid overflow
+  menu.style.paddingBottom = "50px";
 
-  // Set up save score button separately
   setTimeout(() => { // slight delay to ensure elements exist
     document.getElementById("saveScoreButton").addEventListener("click", saveScore);
   }, 50);
 }
+
+async function saveScore() {
+  const usernameInput = document.getElementById("usernameInput");
+  const username = usernameInput.value.trim();
+
+  if (username === "") {
+    alert("Please enter a valid username.");
+    return;
+  }
+
+  const score = parseFloat(raceTime.toFixed(4));
+  const userid = username;
+
+  await submitScore(userid, score);
+
+  setTimeout(() => {
+    startGame();
+  }, 100);
+}
+
+
+async function submitScore(userid, score) {
+  try {
+    const response = await fetch('https://d5tedw0pz6.execute-api.us-east-2.amazonaws.com/score', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userid, score })
+    });
+    const data = await response.json();
+    console.log('Score submit response:', data);
+  } catch (error) {
+    console.error('Failed to submit score:', error);
+  }
+}
+
+async function fetchLeaderboard() {
+  try {
+    const response = await fetch('https://d5tedw0pz6.execute-api.us-east-2.amazonaws.com/leaderboard');
+    const leaderboard = await response.json();
+    console.log('Fetched leaderboard:', leaderboard);
+    return leaderboard;
+  } catch (error) {
+    console.error('Failed to fetch leaderboard:', error);
+    return [];
+  }
+}
+
 
 // Helper function to show the dynamic menu
 function showMenu(title, message, buttonText, buttonAction, extraHTML = "", leaderboardDisplay = "") {
@@ -130,13 +177,13 @@ function resetGame() {
   gameStarted = false;
   greenTime = 0;
   reactionTime = null;
-  raceTime = 0;
   tree.src = "img/tree-01.png";
 
   const car = document.getElementById("car");
   car.style.transition = "none";
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
 }
+
 
 // Start the game once page fully loads
 window.addEventListener("load", startGame);

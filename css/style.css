@@ -72,7 +72,7 @@ th{
 #leaderboard-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 15px; /* horizontal spacing, vertical spacing */
+  border-spacing: 0 15px;
 }
 
 .static-container h2{
@@ -134,7 +134,7 @@ th{
 }
 
 #menu {
-  position: absolute; /* <-- required */
+  position: absolute;
   pointer-events: auto;
   top: 32.5%;
   left: 25%;
