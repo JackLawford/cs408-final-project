@@ -72,7 +72,7 @@ function launchCarAndDisplayTime(reactionTime) {
   void car.offsetWidth;
 
   raceTime = 10 + reactionTime;
-  car.style.transition = `transform ${raceTime}s cubic-bezier(0.05, 0.7, 0.4, 1)`;
+  car.style.transition = `transform ${raceTime}s cubic-bezier(0.01, 0.8, 0.6, 1)`;
   car.style.transform = "translateX(-57%) translateY(-52%) scale(0.01)";
 
   setTimeout(() => {
@@ -131,7 +131,6 @@ async function saveScore() {
   }, 100);
 }
 
-
 async function submitScore(userid, score) {
   try {
     const response = await fetch('https://d5tedw0pz6.execute-api.us-east-2.amazonaws.com/score', {
@@ -158,7 +157,6 @@ async function fetchLeaderboard() {
   }
 }
 
-
 // Helper function to show the dynamic menu
 function showMenu(title, message, buttonText, buttonAction, extraHTML = "", leaderboardDisplay = "") {
   menu.style.display = "block";
@@ -183,7 +181,6 @@ function resetGame() {
   car.style.transition = "none";
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
 }
-
 
 // Start the game once page fully loads
 window.addEventListener("load", startGame);
