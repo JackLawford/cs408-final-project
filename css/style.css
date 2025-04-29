@@ -118,6 +118,14 @@ th{
   width: 40%;
 }
 
+#wheel {
+  bottom: 25%;
+  left: 30%;
+  transform: translateX(-50%);
+  width: 13%;
+  display: none;
+}
+
 #tree {
   top: 10%;
   left: 5%;
@@ -179,6 +187,21 @@ th{
 #username-input:focus {
   outline: none !important;
   border: 2px solid #111;
+}
+
+#needle{
+  top: 73%;
+  left: 16.7%;
+  height: 12%;
+  display: none;
+}
+
+img, .overlay, .gameComponent, #gameCanvas, #backgroundLayer, #menu {
+  user-select: none;
+  -webkit-user-drag: none; /* Prevents dragging images */
+  -webkit-user-select: none; /* Chrome/Safari fix */
+  -moz-user-select: none; /* Firefox fix */
+  -ms-user-select: none; /* IE fix */
 }
 
 /* About Styles */

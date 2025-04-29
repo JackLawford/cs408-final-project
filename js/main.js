@@ -1,33 +1,181 @@
 const tree = document.getElementById("tree");
 const timer = document.getElementById("timer");
 const menu = document.getElementById("menu");
+const car = document.getElementById("car");
 const startButton = document.getElementById("startButton");
 const leaderboardButton = document.getElementById("leaderboardButton");
 const gameCanvas = document.getElementById("gameCanvas");
 const backgroundLayer = document.getElementById("backgroundLayer");
+const needle = document.getElementById('needle');
+const wheel = document.getElementById('wheel');
 
+let gameState = "MENU"; // Possible states: MENU, RACE, BURNOUT
 let gameStarted = false;
 let greenTime = 0;
 let reactionTime = null;
 let raceTime = 0;
 let jumped = false;
+let burnoutNeedleAngle = 0; // degrees
+let isThrottleHeld = false;
+let burnoutGreenZoneTop = 65; // tweak based on real graphics
+let burnoutGreenZoneBottom = 35;
+let burnoutGreenZoneTime = 0; // how much time in green
+let burnoutStartTime = 0; // when burnout started
+let burnoutSessionDuration = 10.0; // in seconds
+let burnoutBonusMultiplier = 1.0; // multiplier for burnout time
+let wheelSpeed = 0; // speed of the wheel rotation
+let burnoutActive = false;
 
-// Start the game (initial menu)
+// start the game (initial menu)
 function startGame() {
   resetGame();
-  backgroundLayer.style.display = "block;";
+  gameState = "MENU";
+
+  backgroundLayer.style.background = "url('../img/load-01.png') no-repeat center center";
+  backgroundLayer.style.display = "block";
+  backgroundLayer.style.backgroundSize = "120% 110%";
+  menu.style.display = "none";
   menu.style.paddingBottom = "0";
-  showMenu("ClickRacer", "Click play to begin!", "Play", startTreeSequence);
+  
+  console.log(menu);
+
+  showMenu("ClickRacer", "Click play to begin!", "Play", startBurnoutPhase);
 }
 
-// Start the tree sequence
+function startBurnoutPhase() {
+  gameState = "BURNOUT"; 
+  gameCanvas.style.background = "url('../img/burnout-pit.png') no-repeat center center";
+  gameCanvas.style.backgroundSize = "cover";
+  menu.style.display = "none";
+  menu.style.paddingBottom = "0";
+  needle.style.display = "block";
+  needle.style.transformOrigin = "center 100%";
+
+  car.src = "img/vettestill.png";
+  car.style.top = "30%";
+  car.style.width = "60%";
+
+  timer.style.fontSize = "4em";
+  timer.style.top = "5%";
+  timer.style.left = "80%";
+  timer.innerText = "BURNOUT!";
+
+  tree.src = "img/gauge.png";
+  tree.style.width = "30%";
+  tree.style.top = "65%";
+  tree.style.left = "-5.1%";
+
+  setTimeout(() => {
+  backgroundLayer.style.display = "none";
+  startBurnoutLogic();
+  }, 100);
+}
+
+function startBurnoutLogic() {
+  burnoutNeedleAngle = 0;
+  isThrottleHeld = false;
+  burnoutGreenZoneTime = 0;
+  burnoutActive = false; // wait for warmup
+  burnoutStartTime = 0;
+
+  setTimeout(() => {
+    burnoutActive = true;
+    burnoutStartTime = performance.now();
+  }, 1500);
+
+  requestAnimationFrame(updateBurnoutNeedle);
+}
+
+
+function updateBurnoutNeedle() {
+  if (gameState !== "BURNOUT") return;
+
+  const now = performance.now();
+  let elapsed = 0;
+
+  if (burnoutActive) {
+    elapsed = (now - burnoutStartTime) / 1000;
+    timer.innerText = `${(10 - elapsed).toFixed(2)}s`;
+  } else {
+    timer.style.left = "20%";
+    timer.innerText = "DO A BURNOUT!!!";
+  }
+
+  if (elapsed >= burnoutSessionDuration) {
+    endBurnoutPhase();
+    return;
+  }
+
+  // Move needle
+  if (isThrottleHeld) {
+    burnoutNeedleAngle += 2;
+  } else {
+    burnoutNeedleAngle -= 1.5;
+  }
+
+  burnoutNeedleAngle = Math.max(0, Math.min(100, burnoutNeedleAngle));
+  needle.style.transform = `translate(-50%, -50%) rotate(${mapNeedleAngleToDegrees(burnoutNeedleAngle)}deg)`;
+
+  // Animate wheel spin
+  if (burnoutNeedleAngle > 5) {
+    wheel.style.display = "block";
+    car.src = "img/vette.png";
+    wheelSpeed = Math.abs(burnoutNeedleAngle * 100);
+  } else {
+    wheel.style.display = "none";
+    car.src = "img/vettestill.png";
+    wheelSpeed = 0;
+  }
+  wheel.style.transform = `translate(-50%, -50%) rotate(${wheelSpeed}deg)`;
+  wheel.style.transition = "transform 0.1s linear";
+
+  // Only count green zone time if burnout is active
+  if (burnoutActive && burnoutNeedleAngle >= burnoutGreenZoneBottom && burnoutNeedleAngle <= burnoutGreenZoneTop) {
+    burnoutGreenZoneTime += 1 / 60;
+  }
+
+  burnoutBonusMultiplier = 1 - (burnoutGreenZoneTime / 100);
+
+  requestAnimationFrame(updateBurnoutNeedle);
+}
+
+
+function endBurnoutPhase() {
+  backgroundLayer.style.display = "block";
+  isThrottleHeld = false;
+  gameCanvas.style.background = "url('../img/strip-01.png') no-repeat center center";
+  gameCanvas.style.backgroundSize = "cover";
+
+  car.src = "img/vetterear.png";
+
+  needle.style.display = "none";
+
+  wheel.style.removeProperty("display");
+
+  timer.textContent = "--.--s";
+  tree.src = "img/tree-01.png";
+  tree.style.removeProperty("top");
+  tree.style.removeProperty("left");
+  tree.style.removeProperty("width"); 
+
+  car.style.removeProperty("top");
+  car.style.removeProperty("width");
+
+  timer.style.removeProperty("font-size");
+  timer.style.removeProperty("top");
+  timer.style.removeProperty("left");
+
+  showMenu( burnoutGreenZoneTime.toFixed(2) + "/10s", "Now you're ready to race!", "Race", startTreeSequence, "", "none" );
+}
+
+// this is what REALLY starts the race
 function startTreeSequence() {
+  menu.style.display = "none";
+  backgroundLayer.style.display = "none";
+  gameState = "RACE";
   raceTime = 0;
   jumped = false;
-  backgroundLayer.style.display = "none";
-  menu.style.display = "none";
   gameStarted = true;
-  timer.textContent = "--.--s";
   tree.src = "img/tree-01.png";
 
   setTimeout(() => {
@@ -45,11 +193,23 @@ function startTreeSequence() {
   }, 1000);
 }
 
-// Handle clicking during gameplay
 gameCanvas.addEventListener("mousedown", () => {
-  if (!gameStarted) return;
-  if (reactionTime !== null) return;
+  //console.log("Mouse down event triggered with gamestate = " + gameState);
+  if (gameState === "BURNOUT") {
+    isThrottleHeld = true;
+  } else if (gameState === "RACE") {
+    if (reactionTime !== null) return; // only launch once
+    handleRaceClick();
+  }
+});
 
+gameCanvas.addEventListener("mouseup", () => {
+  if (gameState === "BURNOUT") {
+    isThrottleHeld = false;
+  }
+});
+
+function handleRaceClick() {
   const now = performance.now();
 
   if (greenTime === 0) {
@@ -59,29 +219,31 @@ gameCanvas.addEventListener("mousedown", () => {
     reactionTime = (now - greenTime) / 1000;
     launchCarAndDisplayTime(reactionTime);
   }
-});
+}
 
-// Animate the car shrinking and driving away
+// car shrinks and drives away, score is displayed
 function launchCarAndDisplayTime(reactionTime) {
-  const car = document.getElementById("car");
-
-  // Reset any previous animation
   car.style.transition = "none";
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
   
   void car.offsetWidth;
 
   raceTime = 10 + reactionTime;
-  car.style.transition = `transform ${raceTime}s cubic-bezier(0.01, 0.8, 0.6, 1)`;
-  car.style.transform = "translateX(-57%) translateY(-52%) scale(0.01)";
+  const finalTime = raceTime * burnoutBonusMultiplier;
 
+  //console.log("Final time: " + finalTime.toFixed(2) + "s with burnout bonus: " + burnoutBonusMultiplier.toFixed(2) + "x" + " (reaction time: " + reactionTime.toFixed(2) + "s)");
+  
+  car.style.transition = `transform ${raceTime}s cubic-bezier(0.01, 0.8, 0.1, 1)`;
+  car.style.transform = "translateX(-57%) translateY(-52%) scale(0.01)";
+  
   setTimeout(() => {
-    timer.textContent = `${raceTime.toFixed(2)}s`;
-    raceDone(raceTime);
+    timer.textContent = `${finalTime.toFixed(2)}s`;
+    setTimeout(() => {
+      raceDone(finalTime);
+    }, 1000);
   }, raceTime * 1000);
 }
 
-// Handle false start (jumped the light)
 function jumpedStart() {
   jumped = true;
   resetGame();
@@ -89,10 +251,10 @@ function jumpedStart() {
   showMenu("Not so fast!", "You have to wait for the light to turn green, hotshot!", "Restart", startGame, "", "none");
 }
 
-// Handle race finish
 function raceDone(raceTime) {
   resetGame();
 
+  backgroundLayer.style.display = "block";
   const extraHTML = `
     <input id="usernameInput" type="text" placeholder="Username" style="margin: 10px 0 10px 5px; padding: 8px; font-size: 1em; border-radius: 5px; ">
     <button id="saveScoreButton" style="margin: 10px; padding: 8px 12px;">Save Time</button><br/>`;
@@ -107,7 +269,7 @@ function raceDone(raceTime) {
 
   menu.style.paddingBottom = "50px";
 
-  setTimeout(() => { // slight delay to ensure elements exist
+  setTimeout(() => { // slight delay to ensure elements exist *****DO NOT REMOVE******
     document.getElementById("saveScoreButton").addEventListener("click", saveScore);
   }, 50);
 }
@@ -145,19 +307,12 @@ async function submitScore(userid, score) {
   }
 }
 
-async function fetchLeaderboard() {
-  try {
-    const response = await fetch('https://d5tedw0pz6.execute-api.us-east-2.amazonaws.com/leaderboard');
-    const leaderboard = await response.json();
-    console.log('Fetched leaderboard:', leaderboard);
-    return leaderboard;
-  } catch (error) {
-    console.error('Failed to fetch leaderboard:', error);
-    return [];
-  }
+function mapNeedleAngleToDegrees(value) {
+  const minDeg = -90;
+  const maxDeg = 90;
+  return minDeg + (maxDeg - minDeg) * (value / 100);
 }
 
-// Helper function to show the dynamic menu
 function showMenu(title, message, buttonText, buttonAction, extraHTML = "", leaderboardDisplay = "") {
   menu.style.display = "block";
   menu.innerHTML = `
@@ -172,6 +327,7 @@ function showMenu(title, message, buttonText, buttonAction, extraHTML = "", lead
 }
 
 function resetGame() {
+  gameState = "MENU";
   gameStarted = false;
   greenTime = 0;
   reactionTime = null;
@@ -182,5 +338,4 @@ function resetGame() {
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
 }
 
-// Start the game once page fully loads
 window.addEventListener("load", startGame);
