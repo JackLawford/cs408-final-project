@@ -25,6 +25,10 @@ let burnoutSessionDuration = 10.0; // in seconds
 let burnoutBonusMultiplier = 1.0; // multiplier for burnout time
 let wheelSpeed = 0; // speed of the wheel rotation
 let burnoutActive = false;
+let volume = 0; // volume for sound effects
+const launchSound = new Audio('sounds/launch.mp3');
+const revSound = new Audio('sounds/rev.mp3');
+const idleSound = new Audio('sounds/idle.mp3');
 
 // start the game (initial menu)
 function startGame() {
@@ -120,11 +124,33 @@ function updateBurnoutNeedle() {
   if (burnoutNeedleAngle > 5) {
     wheel.style.display = "block";
     car.src = "img/vette.png";
+
     wheelSpeed = Math.abs(burnoutNeedleAngle * 100);
+
+    if (revSound.paused) {
+      revSound.volume = 0;
+      revSound.play();
+      revSound.loop = true;
+
+      let fadeInterval = setInterval(() => {
+        if (revSound.volume < 0.7) {
+          revSound.volume = Math.min(revSound.volume + 0.1, 1);
+        } else {
+          clearInterval(fadeInterval);
+        }
+      }, 100); // Adjust the interval duration for smoother or faster fade-in
+    }
   } else {
     wheel.style.display = "none";
     car.src = "img/vettestill.png";
+
     wheelSpeed = 0;
+
+    revSound.pause();
+    revSound.currentTime = 0;
+    
+    idleSound.loop = true;
+    idleSound.play();
   }
   wheel.style.transform = `translate(-50%, -50%) rotate(${wheelSpeed}deg)`;
   wheel.style.transition = "transform 0.1s linear";
@@ -138,7 +164,6 @@ function updateBurnoutNeedle() {
 
   requestAnimationFrame(updateBurnoutNeedle);
 }
-
 
 function endBurnoutPhase() {
   backgroundLayer.style.display = "block";
@@ -165,6 +190,9 @@ function endBurnoutPhase() {
   timer.style.removeProperty("top");
   timer.style.removeProperty("left");
 
+  idleSound.pause();
+  revSound.pause();
+
   showMenu( burnoutGreenZoneTime.toFixed(2) + "/10s", "Now you're ready to race!", "Race", startTreeSequence, "", "none" );
 }
 
@@ -177,6 +205,7 @@ function startTreeSequence() {
   jumped = false;
   gameStarted = true;
   tree.src = "img/tree-01.png";
+  idleSound.play();
 
   setTimeout(() => {
     if (jumped) return;
@@ -211,7 +240,10 @@ gameCanvas.addEventListener("mouseup", () => {
 
 function handleRaceClick() {
   const now = performance.now();
-
+  idleSound.pause();
+  launchSound.currentTime = 0;
+  launchSound.volume = 0.8;
+  launchSound.play();
   if (greenTime === 0) {
     jumpedStart();
     tree.src = "img/red_tree-01.png";
@@ -253,7 +285,7 @@ function jumpedStart() {
 
 function raceDone(raceTime) {
   resetGame();
-
+  launchSound.pause();
   backgroundLayer.style.display = "block";
   const extraHTML = `
     <input id="usernameInput" type="text" placeholder="Username" style="margin: 10px 0 10px 5px; padding: 8px; font-size: 1em; border-radius: 5px; ">
