@@ -9,6 +9,10 @@ const backgroundLayer = document.getElementById("backgroundLayer");
 const needle = document.getElementById('needle');
 const wheel = document.getElementById('wheel');
 
+const launchSound = new Audio('sounds/launch.mp3');
+const revSound = new Audio('sounds/rev.mp3');
+const idleSound = new Audio('sounds/idle.mp3');
+
 let gameState = "MENU"; // Possible states: MENU, RACE, BURNOUT
 let gameStarted = false;
 let greenTime = 0;
@@ -26,9 +30,6 @@ let burnoutBonusMultiplier = 1.0; // multiplier for burnout time
 let wheelSpeed = 0; // speed of the wheel rotation
 let burnoutActive = false;
 let volume = 0; // volume for sound effects
-const launchSound = new Audio('sounds/launch.mp3');
-const revSound = new Audio('sounds/rev.mp3');
-const idleSound = new Audio('sounds/idle.mp3');
 
 // start the game (initial menu)
 function startGame() {
@@ -68,6 +69,8 @@ function startBurnoutPhase() {
   tree.style.width = "30%";
   tree.style.top = "65%";
   tree.style.left = "-5.1%";
+
+  idleSound.volume = 0.1;
 
   setTimeout(() => {
   backgroundLayer.style.display = "none";
@@ -110,7 +113,7 @@ function updateBurnoutNeedle() {
     return;
   }
 
-  // Move needle
+  // move needle
   if (isThrottleHeld) {
     burnoutNeedleAngle += 2;
   } else {
@@ -120,7 +123,7 @@ function updateBurnoutNeedle() {
   burnoutNeedleAngle = Math.max(0, Math.min(100, burnoutNeedleAngle));
   needle.style.transform = `translate(-50%, -50%) rotate(${mapNeedleAngleToDegrees(burnoutNeedleAngle)}deg)`;
 
-  // Animate wheel spin
+  // animate wheel spin
   if (burnoutNeedleAngle > 5) {
     wheel.style.display = "block";
     car.src = "img/vette.png";
@@ -133,12 +136,12 @@ function updateBurnoutNeedle() {
       revSound.loop = true;
 
       let fadeInterval = setInterval(() => {
-        if (revSound.volume < 0.7) {
+        if (revSound.volume < 0.5) {
           revSound.volume = Math.min(revSound.volume + 0.1, 1);
         } else {
           clearInterval(fadeInterval);
         }
-      }, 100); // Adjust the interval duration for smoother or faster fade-in
+      }, 100);
     }
   } else {
     wheel.style.display = "none";
@@ -241,8 +244,8 @@ gameCanvas.addEventListener("mouseup", () => {
 function handleRaceClick() {
   const now = performance.now();
   idleSound.pause();
-  launchSound.currentTime = 0;
-  launchSound.volume = 0.8;
+  launchSound.currentTime = 1;
+  launchSound.volume = 0.5;
   launchSound.play();
   if (greenTime === 0) {
     jumpedStart();
@@ -260,8 +263,8 @@ function launchCarAndDisplayTime(reactionTime) {
   
   void car.offsetWidth;
 
-  raceTime = 10 + reactionTime;
-  const finalTime = raceTime * burnoutBonusMultiplier;
+  raceTime = 10 * burnoutBonusMultiplier;
+  const finalTime = raceTime + reactionTime;
 
   //console.log("Final time: " + finalTime.toFixed(2) + "s with burnout bonus: " + burnoutBonusMultiplier.toFixed(2) + "x" + " (reaction time: " + reactionTime.toFixed(2) + "s)");
   

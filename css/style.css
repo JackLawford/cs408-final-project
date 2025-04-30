@@ -196,12 +196,13 @@ th{
   display: none;
 }
 
+/* remove highlighting on double click */
 img, .overlay, .gameComponent, #gameCanvas, #backgroundLayer, #menu {
   user-select: none;
-  -webkit-user-drag: none; /* Prevents dragging images */
-  -webkit-user-select: none; /* Chrome/Safari fix */
-  -moz-user-select: none; /* Firefox fix */
-  -ms-user-select: none; /* IE fix */
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* About Styles */

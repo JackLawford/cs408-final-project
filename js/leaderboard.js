@@ -12,10 +12,10 @@ async function fetchLeaderboard() {
   function updateLeaderboardDisplay(scores) {
     const leaderboardBody = document.getElementById('leaderboard-body');
   
-    // Clear existing rows
+    // clear existing entries
     leaderboardBody.innerHTML = '';
   
-    // Insert new rows
+    // insert entries
     scores.forEach((entry, index) => {
       const row = document.createElement('tr');
   
@@ -36,7 +36,7 @@ async function fetchLeaderboard() {
     });
   }
   
-  // When page loads, fetch and update leaderboard
+  // fetch on page load
   window.addEventListener('DOMContentLoaded', async () => {
     const scores = await fetchLeaderboard();
     updateLeaderboardDisplay(scores);
