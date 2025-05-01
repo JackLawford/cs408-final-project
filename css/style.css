@@ -69,6 +69,16 @@ th{
   padding: 10px;
 }
 
+#refreshBtn{
+  background-color: #111;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 #leaderboard-table {
   width: 100%;
   border-collapse: separate;
@@ -81,6 +91,30 @@ th{
   padding: 0;
 }
 
+#userActionForm{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#useridInput{
+  margin: 10px 0 10px 5px;
+  padding: 8px;
+  font-size: 1em;
+  border-radius: 10px;
+}
+
+.leaderboard-button{
+  background-color: #111;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
 /* Game Styles */
 .game-container {

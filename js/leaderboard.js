@@ -42,3 +42,7 @@ async function fetchLeaderboard() {
     updateLeaderboardDisplay(scores);
   });
   
+document.getElementById("refreshBtn").addEventListener("click", async () => {
+  const scores = await fetchLeaderboard();
+  updateLeaderboardDisplay(scores);
+});

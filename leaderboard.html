@@ -31,6 +31,17 @@
       <tbody id="leaderboard-body">
       </tbody>
     </table>
+    <div class="static-container">
+      <h3>Search or Delete User</h3>
+      <form id="userActionForm">
+        <input id="useridInput" type="text" placeholder="Enter Username">
+        <button class="leaderboard-button" id="searchBtn" type="submit">Search</button>
+        <button class="leaderboard-button" id="deleteBtn" type="button">Delete</button>
+      </form>
+      <p id="userOutput" style="margin-top: 10px;"></p>
+    </div>
+    <div id="refreshBtn">Refresh Leaderboard</div>
+  <script src="js/leaderboard_interaction.js"></script>    
   <script type="module" src="js/leaderboard.js"></script>
 </body>
 

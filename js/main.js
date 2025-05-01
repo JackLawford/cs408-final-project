@@ -34,15 +34,12 @@ let volume = 0; // volume for sound effects
 // start the game (initial menu)
 function startGame() {
   resetGame();
-  gameState = "MENU";
 
   backgroundLayer.style.background = "url('../img/load-01.png') no-repeat center center";
   backgroundLayer.style.display = "block";
   backgroundLayer.style.backgroundSize = "120% 110%";
   menu.style.display = "none";
   menu.style.paddingBottom = "0";
-  
-  console.log(menu);
 
   showMenu("ClickRacer", "Click play to begin!", "Play", startBurnoutPhase);
 }
@@ -368,9 +365,10 @@ function resetGame() {
   reactionTime = null;
   tree.src = "img/tree-01.png";
 
-  const car = document.getElementById("car");
   car.style.transition = "none";
   car.style.transform = "translateX(-50%) translateY(0px) scale(1)";
 }
+
+window.mapNeedleAngleToDegrees = mapNeedleAngleToDegrees;
 
 window.addEventListener("load", startGame);
